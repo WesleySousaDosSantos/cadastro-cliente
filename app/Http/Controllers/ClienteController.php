@@ -33,18 +33,12 @@ class ClienteController extends Controller
             'uf' => 'required|string|max:2',
         ]);
 
-        $existingClient = Client::where('nome', $request->input('nome'))
-        ->where('data_nascimento', $request->input('data_nascimento'))
-        ->first();
+        $clientId = $request->input('id');
 
-            if ($existingClient) {
-            return redirect()->route('welcome')
-                ->with('teste', 'Cliente já cadastrado!');
-            }
-
+        
         Client::updateOrCreate(
-            ['id' => $request->input('id')],
-            $request->all()
+            ['id' => $clientId],
+            $request->except('_token') 
         );
 
         return redirect()->route('welcome')  
@@ -55,5 +49,18 @@ class ClienteController extends Controller
     {
         $response = Http::get("https://viacep.com.br/ws/{$cep}/json/");
         return response()->json($response->json());
+    }
+
+    public function destroy($id)
+    {
+        $client = Client::find($id);
+        if ($client) {
+            $client->delete();
+            return redirect()->route('welcome')
+                             ->with('teste', 'Cliente excluído com sucesso!');
+        }
+
+        return redirect()->route('welcome')
+                         ->with('erro', 'Cliente não encontrado!');
     }
 }

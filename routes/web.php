@@ -13,7 +13,8 @@ use App\Http\Controllers\ClienteController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
 Route::get('/', [ClienteController::class, 'index'])->name('welcome');
 Route::post('/clientes', [ClienteController::class, 'store'])->name('clientes.store');
 Route::get('buscar-cep/{cep}', [ClienteController::class, 'buscarEnderecoPorCep']);
+Route::delete('/clientes/{id}', [ClienteController::class, 'destroy'])->name('clientes.destroy');
+
